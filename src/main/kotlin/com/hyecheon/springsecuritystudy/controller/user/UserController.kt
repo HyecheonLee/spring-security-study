@@ -1,7 +1,7 @@
-package com.hyecheon.springsecuritystudy.controller
+package com.hyecheon.springsecuritystudy.controller.user
 
 import com.hyecheon.springsecuritystudy.dto.AccountDto
-import com.hyecheon.springsecuritystudy.dto.AccountDtoMapper
+import com.hyecheon.springsecuritystudy.domain.AccountMapper
 import com.hyecheon.springsecuritystudy.service.UserService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 class UserController(
 		val passwordEncoder: PasswordEncoder,
 		val userService: UserService,
-		val accountDtoMapper: AccountDtoMapper
+		val accountMapper: AccountMapper
 ) {
 
 	@GetMapping("/mypage")
@@ -26,7 +26,7 @@ class UserController(
 		this.password = passwordEncoder.encode(this.password)
 		this
 	}.let { it ->
-		val account = accountDtoMapper.toEntity(it)
+		val account = accountMapper.toEntity(it)
 		userService.createUser(account)
 		"redirect:/"
 	}

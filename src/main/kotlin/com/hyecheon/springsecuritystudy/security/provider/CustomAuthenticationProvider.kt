@@ -1,33 +1,32 @@
 package com.hyecheon.springsecuritystudy.security.provider
 
 import com.hyecheon.springsecuritystudy.security.service.AccountContext
-import com.hyecheon.springsecuritystudy.security.service.CustomUserDetailService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 
 
 class CustomAuthenticationProvider(
-        private val customUserDetailService: CustomUserDetailService,
-        private val passwordEncoder: PasswordEncoder
+		private val userDetailsService: UserDetailsService,
+		private val passwordEncoder: PasswordEncoder
 ) : AuthenticationProvider {
 
-    override fun authenticate(authentication: Authentication): Authentication {
-        val username = authentication.name
-        val password = authentication.credentials as String
+	override fun authenticate(authentication: Authentication): Authentication {
+		val username = authentication.name
+		val password = authentication.credentials as String
 
-        val accountContext = customUserDetailService.loadUserByUsername(username) as AccountContext
+		val accountContext = userDetailsService.loadUserByUsername(username) as AccountContext
 
-        if (!passwordEncoder.matches(password, accountContext.account.password)) {
-            throw BadCredentialsException("BadCredentialsException")
-        }
-        return UsernamePasswordAuthenticationToken(accountContext.account, null, accountContext.authorities)
-    }
+		if (!passwordEncoder.matches(password, accountContext.account.password)) {
+			throw BadCredentialsException("BadCredentialsException")
+		}
+		return UsernamePasswordAuthenticationToken(accountContext.account, null, accountContext.authorities)
+	}
 
-    override fun supports(authentication: Class<*>): Boolean {
-        return UsernamePasswordAuthenticationToken::class.java.isAssignableFrom(authentication)
-    }
+	override fun supports(authentication: Class<*>): Boolean {
+		return UsernamePasswordAuthenticationToken::class.java.isAssignableFrom(authentication)
+	}
 }
