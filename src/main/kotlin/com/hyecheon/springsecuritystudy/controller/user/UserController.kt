@@ -1,6 +1,6 @@
 package com.hyecheon.springsecuritystudy.controller.user
 
-import com.hyecheon.springsecuritystudy.dto.AccountDto
+import com.hyecheon.springsecuritystudy.dto.AccountLoginDto
 import com.hyecheon.springsecuritystudy.domain.AccountMapper
 import com.hyecheon.springsecuritystudy.service.UserService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -22,12 +22,13 @@ class UserController(
 	fun createUser() = "user/login/register"
 
 	@PostMapping("/users")
-	fun createUser(accountDto: AccountDto) = with(accountDto) {
-		this.password = passwordEncoder.encode(this.password)
-		this
-	}.let { it ->
-		val account = accountMapper.toEntity(it)
-		userService.createUser(account)
-		"redirect:/"
-	}
+	fun createUser(accountLoginDto: AccountLoginDto) =
+			with(accountLoginDto) {
+				this.password = passwordEncoder.encode(this.password)
+				this
+			}.let {
+				val account = accountMapper.toEntity(it)
+				userService.createUser(account)
+				"redirect:/"
+			}
 }

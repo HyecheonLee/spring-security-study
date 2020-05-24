@@ -1,11 +1,11 @@
 package com.hyecheon.springsecuritystudy.domain
 
-import com.hyecheon.springsecuritystudy.dto.AccountDto
+import com.hyecheon.springsecuritystudy.dto.AccountLoginDto
 import org.mapstruct.Mapper
 
 @Mapper(componentModel = "spring")
 interface AccountMapper {
-	fun toEntity(dto: AccountDto): Account
+	fun toEntity(loginDto: AccountLoginDto): Account
 
-	fun toAccountDto(entity: Account): AccountDto
+	fun toAccountDto(entity: Account): AccountLoginDto
 }
