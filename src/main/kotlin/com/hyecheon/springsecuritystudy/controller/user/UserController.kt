@@ -23,11 +23,9 @@ class UserController(
 
 	@PostMapping("/users")
 	fun createUser(accountLoginDto: AccountLoginDto) =
-			with(accountLoginDto) {
-				this.password = passwordEncoder.encode(this.password)
-				this
-			}.let {
-				val account = accountMapper.toEntity(it)
+			let {
+				accountLoginDto.password = passwordEncoder.encode(accountLoginDto.password)
+				val account = accountMapper.toEntity(accountLoginDto)
 				userService.createUser(account)
 				"redirect:/"
 			}

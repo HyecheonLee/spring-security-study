@@ -1,8 +1,10 @@
 package com.hyecheon.springsecuritystudy.security.provider
 
+import com.hyecheon.springsecuritystudy.security.common.FormWebAuthenticationDetails
 import com.hyecheon.springsecuritystudy.security.service.AccountContext
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -22,6 +24,10 @@ class CustomAuthenticationProvider(
 
 		if (!passwordEncoder.matches(password, accountContext.account.password)) {
 			throw BadCredentialsException("BadCredentialsException")
+		}
+		val details = authentication.details as FormWebAuthenticationDetails
+		if (details.secretKey.isNullOrEmpty()) {
+			throw InsufficientAuthenticationException("InsufficientAuthenticationException")
 		}
 		return UsernamePasswordAuthenticationToken(accountContext.account, null, accountContext.authorities)
 	}
