@@ -49,7 +49,9 @@ class SecurityConfig(
 				.formLogin()
 				.loginPage("/login")
 				.loginProcessingUrl("/login_proc")
-				.defaultSuccessUrl("/mypage")
+				.successHandler { _, response, _ ->
+					response.sendRedirect("/mypage")
+				}
 				.permitAll()
 	}
 }
