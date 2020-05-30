@@ -1,5 +1,6 @@
 package com.hyecheon.springsecuritystudy.domain
 
+import java.io.Serializable
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -15,5 +16,5 @@ data class Account(
 		var email: String = "",
 		var age: String = "",
 		var role: String = ""
-)
+) : Serializable
 

@@ -1,5 +1,6 @@
 package com.hyecheon.springsecuritystudy.controller.login
 
+import com.hyecheon.springsecuritystudy.domain.Account
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.stereotype.Controller
@@ -30,4 +31,16 @@ class LoginController {
 						}
 				"redirect:/login"
 			}
+
+	@GetMapping("/denied")
+	fun accessPage(@RequestParam(value = "exception", required = false) exception: String?,
+	               model: Model) = let {
+		val authentication = SecurityContextHolder.getContext().authentication
+		val principal = authentication.principal
+		if (principal is Account) {
+			model.addAttribute("username", principal.username)
+		}
+		model.addAttribute("exception", exception)
+		"user/login/denied"
+	}
 }

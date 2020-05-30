@@ -1,7 +1,8 @@
 package com.hyecheon.springsecuritystudy.security.config
 
-import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
+import com.hyecheon.springsecuritystudy.security.handler.CustomAccessDeniedHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationFailureHandler
+import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
 import com.hyecheon.springsecuritystudy.security.provider.CustomAuthenticationProvider
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
@@ -38,12 +39,18 @@ class SecurityConfig(
 	}
 
 	@Bean
+	fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler("/denied")
+
+
+	@Bean
 	fun passwordEncoder(): PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
+	@Throws(Exception::class)
 	override fun configure(web: WebSecurity) {
 		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
 	}
 
+	@Throws(Exception::class)
 	override fun configure(http: HttpSecurity) {
 		http
 				.authorizeRequests()
@@ -56,10 +63,12 @@ class SecurityConfig(
 				.formLogin()
 				.loginPage("/login")
 				.loginProcessingUrl("/login_proc")
-				.defaultSuccessUrl("/")
 				.authenticationDetailsSource(authenticationDetailsSource)
 				.successHandler(customAuthenticationSuccessHandler)
 				.failureHandler(customAuthenticationFailureHandler)
 				.permitAll()
+				.and()
+				.exceptionHandling()
+				.accessDeniedHandler(accessDeniedHandler())
 	}
 }

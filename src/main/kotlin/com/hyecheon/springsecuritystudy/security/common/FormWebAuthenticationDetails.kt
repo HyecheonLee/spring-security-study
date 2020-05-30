@@ -5,9 +5,6 @@ import javax.servlet.http.HttpServletRequest
 
 
 class FormWebAuthenticationDetails(request: HttpServletRequest) : WebAuthenticationDetails(request) {
-	val secretKey: String?
+	val secretKey: String? = request.getParameter("secret_key")
 
-	init {
-		secretKey = request.getParameter("secret_key")
-	}
 }
