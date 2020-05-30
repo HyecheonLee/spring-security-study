@@ -1,6 +1,7 @@
 package com.hyecheon.springsecuritystudy.security.config
 
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
+import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationFailureHandler
 import com.hyecheon.springsecuritystudy.security.provider.CustomAuthenticationProvider
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
@@ -24,7 +25,8 @@ import javax.servlet.http.HttpServletRequest
 class SecurityConfig(
 		val userDetailService: UserDetailsService,
 		val authenticationDetailsSource: AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails>,
-		val authenticationSuccessHandler: CustomAuthenticationSuccessHandler) : WebSecurityConfigurerAdapter() {
+		val customAuthenticationSuccessHandler: CustomAuthenticationSuccessHandler,
+		val customAuthenticationFailureHandler: CustomAuthenticationFailureHandler) : WebSecurityConfigurerAdapter() {
 
 	override fun configure(auth: AuthenticationManagerBuilder) {
 		auth.authenticationProvider(authenticationProvider())
@@ -45,7 +47,7 @@ class SecurityConfig(
 	override fun configure(http: HttpSecurity) {
 		http
 				.authorizeRequests()
-				.antMatchers("/", "/users").permitAll()
+				.antMatchers("/", "/users", "user/login/**", "/login*").permitAll()
 				.antMatchers("/mypage").hasRole("USER")
 				.antMatchers("/message").hasRole("MANAGER")
 				.antMatchers("/config").hasRole("ADMIN")
@@ -56,7 +58,8 @@ class SecurityConfig(
 				.loginProcessingUrl("/login_proc")
 				.defaultSuccessUrl("/")
 				.authenticationDetailsSource(authenticationDetailsSource)
-				.successHandler(authenticationSuccessHandler)
+				.successHandler(customAuthenticationSuccessHandler)
+				.failureHandler(customAuthenticationFailureHandler)
 				.permitAll()
 	}
 }
