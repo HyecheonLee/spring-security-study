@@ -1,5 +1,6 @@
 package com.hyecheon.springsecuritystudy.security.config
 
+import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
 import com.hyecheon.springsecuritystudy.security.provider.CustomAuthenticationProvider
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
@@ -22,8 +23,8 @@ import javax.servlet.http.HttpServletRequest
 @EnableWebSecurity
 class SecurityConfig(
 		val userDetailService: UserDetailsService,
-		val authenticationDetailsSource: AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails>
-) : WebSecurityConfigurerAdapter() {
+		val authenticationDetailsSource: AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails>,
+		val authenticationSuccessHandler: CustomAuthenticationSuccessHandler) : WebSecurityConfigurerAdapter() {
 
 	override fun configure(auth: AuthenticationManagerBuilder) {
 		auth.authenticationProvider(authenticationProvider())
@@ -53,10 +54,9 @@ class SecurityConfig(
 				.formLogin()
 				.loginPage("/login")
 				.loginProcessingUrl("/login_proc")
+				.defaultSuccessUrl("/")
 				.authenticationDetailsSource(authenticationDetailsSource)
-				.successHandler { _, response, _ ->
-					response.sendRedirect("/mypage")
-				}
+				.successHandler(authenticationSuccessHandler)
 				.permitAll()
 	}
 }
