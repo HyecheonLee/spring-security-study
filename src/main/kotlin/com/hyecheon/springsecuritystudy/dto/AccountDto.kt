@@ -7,3 +7,8 @@ data class AccountLoginDto(
 		var age: String = "",
 		var role: String = ""
 )
+
+data class AccountDto(
+		var username: String = "",
+		var password: String = ""
+)

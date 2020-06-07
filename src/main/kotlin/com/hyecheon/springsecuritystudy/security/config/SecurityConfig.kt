@@ -1,5 +1,6 @@
 package com.hyecheon.springsecuritystudy.security.config
 
+import com.hyecheon.springsecuritystudy.security.filter.AjaxLoginProcessingFilter
 import com.hyecheon.springsecuritystudy.security.handler.CustomAccessDeniedHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationFailureHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.WebAuthenticationDetails
 import javax.servlet.http.HttpServletRequest
 
@@ -37,9 +39,6 @@ class SecurityConfig(
 	fun authenticationProvider(): AuthenticationProvider {
 		return CustomAuthenticationProvider(userDetailService, passwordEncoder())
 	}
-
-	@Bean
-	fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler("/denied")
 
 
 	@Bean
@@ -70,5 +69,19 @@ class SecurityConfig(
 				.and()
 				.exceptionHandling()
 				.accessDeniedHandler(accessDeniedHandler())
+				.and()
+				.addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter::class.java)
+
+		http.csrf().disable()
+	}
+
+	@Bean
+	fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler("/denied")
+
+	@Bean
+	fun ajaxLoginProcessingFilter(): AjaxLoginProcessingFilter {
+		val ajaxLoginProcessingFilter = AjaxLoginProcessingFilter()
+		ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean())
+		return ajaxLoginProcessingFilter
 	}
 }

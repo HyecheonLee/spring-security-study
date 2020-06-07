@@ -33,14 +33,14 @@ class LoginController {
 			}
 
 	@GetMapping("/denied")
-	fun accessPage(@RequestParam(value = "exception", required = false) exception: String?,
-	               model: Model) = let {
-		val authentication = SecurityContextHolder.getContext().authentication
-		val principal = authentication.principal
-		if (principal is Account) {
-			model.addAttribute("username", principal.username)
-		}
-		model.addAttribute("exception", exception)
-		"user/login/denied"
-	}
+	fun accessPage(@RequestParam(value = "exception", required = false) exception: String?, model: Model) =
+			let {
+				val authentication = SecurityContextHolder.getContext().authentication
+				val principal = authentication.principal
+				if (principal is Account) {
+					model.addAttribute("username", principal.username)
+				}
+				model.addAttribute("exception", exception)
+				"user/login/denied"
+			}
 }
