@@ -4,7 +4,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.SpringSecurityCoreVersion
 
-open class AjaxAuthenticationToken : AbstractAuthenticationToken {
+class AjaxAuthenticationToken : AbstractAuthenticationToken {
 
 	private val principal: Any
 	private var credentials: Any?

@@ -2,17 +2,20 @@ package com.hyecheon.springsecuritystudy.security.provider
 
 import com.hyecheon.springsecuritystudy.security.service.AccountContext
 import com.hyecheon.springsecuritystudy.security.token.AjaxAuthenticationToken
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 
 
-class AjaxAuthenticationProvider(
-		private val userDetailsService: UserDetailsService,
-		private val passwordEncoder: PasswordEncoder) : AuthenticationProvider {
+class AjaxAuthenticationProvider : AuthenticationProvider {
+	@Autowired
+	lateinit var userDetailsService: UserDetailsService
+
+	@Autowired
+	lateinit var passwordEncoder: PasswordEncoder
 
 	override fun authenticate(authentication: Authentication): Authentication {
 		val username = authentication.name
@@ -28,7 +31,7 @@ class AjaxAuthenticationProvider(
 	}
 
 	override fun supports(authentication: Class<*>): Boolean {
-		return authentication is AjaxAuthenticationToken
+		return authentication == AjaxAuthenticationToken::class
 	}
 
 }

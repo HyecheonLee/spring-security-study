@@ -7,7 +7,6 @@ import com.hyecheon.springsecuritystudy.security.token.AjaxAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import java.lang.IllegalArgumentException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -24,7 +23,7 @@ class AjaxLoginProcessingFilter : AbstractAuthenticationProcessingFilter(AntPath
 			throw IllegalArgumentException("Username or Password is empty")
 		}
 		val ajaxAuthenticationToken = AjaxAuthenticationToken(accountDto.username, accountDto.password)
-		return authenticationManager.authenticate(ajaxAuthenticationToken)
+		return AjaxAuthenticationToken(accountDto.username, accountDto.password)
 	}
 
 	private fun isAjax(request: HttpServletRequest): Boolean {
