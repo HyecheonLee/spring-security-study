@@ -1,6 +1,5 @@
 package com.hyecheon.springsecuritystudy.security.config
 
-import com.hyecheon.springsecuritystudy.security.filter.AjaxLoginProcessingFilter
 import com.hyecheon.springsecuritystudy.security.handler.CustomAccessDeniedHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationFailureHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
@@ -8,6 +7,7 @@ import com.hyecheon.springsecuritystudy.security.provider.CustomAuthenticationPr
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.AuthenticationDetailsSource
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -18,13 +18,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.WebAuthenticationDetails
 import javax.servlet.http.HttpServletRequest
 
 
 @Configuration
 @EnableWebSecurity
+@Order(1)
 class SecurityConfig(
 		val userDetailService: UserDetailsService,
 		val authenticationDetailsSource: AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails>,
@@ -69,8 +69,6 @@ class SecurityConfig(
 				.and()
 				.exceptionHandling()
 				.accessDeniedHandler(accessDeniedHandler())
-				.and()
-				.addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter::class.java)
 
 		http.csrf().disable()
 	}
@@ -78,10 +76,4 @@ class SecurityConfig(
 	@Bean
 	fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler("/denied")
 
-	@Bean
-	fun ajaxLoginProcessingFilter(): AjaxLoginProcessingFilter {
-		val ajaxLoginProcessingFilter = AjaxLoginProcessingFilter()
-		ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean())
-		return ajaxLoginProcessingFilter
-	}
 }

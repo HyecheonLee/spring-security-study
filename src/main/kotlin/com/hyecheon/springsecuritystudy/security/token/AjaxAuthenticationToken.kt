@@ -15,8 +15,7 @@ open class AjaxAuthenticationToken : AbstractAuthenticationToken {
 		isAuthenticated = false
 	}
 
-	constructor(principal: Any, credentials: Any,
-	            authorities: Collection<GrantedAuthority?>?) : super(authorities) {
+	constructor(principal: Any, credentials: Any?, authorities: Collection<GrantedAuthority?>?) : super(authorities) {
 		this.principal = principal
 		this.credentials = credentials
 		super.setAuthenticated(true) // must use super, as we override
