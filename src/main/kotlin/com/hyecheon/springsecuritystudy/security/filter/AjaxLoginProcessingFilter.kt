@@ -10,10 +10,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class AjaxLoginProcessingFilter : AbstractAuthenticationProcessingFilter(AntPathRequestMatcher("/api/login")) {
+
+class AjaxLoginProcessingFilter : AbstractAuthenticationProcessingFilter(AntPathRequestMatcher("/api/login", "POST")) {
 	private val objectMapper = ObjectMapper()
 
-	@Throws(Exception::class)
 	override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
 		if (!isAjax(request)) {
 			throw IllegalStateException("Authentication is not supported")
@@ -22,8 +22,8 @@ class AjaxLoginProcessingFilter : AbstractAuthenticationProcessingFilter(AntPath
 		if (accountDto.username.isNullOrEmpty() || accountDto.password.isNullOrEmpty()) {
 			throw IllegalArgumentException("Username or Password is empty")
 		}
-		val ajaxAuthenticationToken = AjaxAuthenticationToken(accountDto.username, accountDto.password)
-		return AjaxAuthenticationToken(accountDto.username, accountDto.password)
+		val token = AjaxAuthenticationToken(accountDto.username, accountDto.password)
+		return this.authenticationManager.authenticate(token)
 	}
 
 	private fun isAjax(request: HttpServletRequest): Boolean {

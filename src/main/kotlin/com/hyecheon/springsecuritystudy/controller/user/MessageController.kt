@@ -2,12 +2,15 @@ package com.hyecheon.springsecuritystudy.controller.user
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
 class MessageController {
-	@GetMapping("/messages")
-	fun message() = let { "user/message" }
 
+	@GetMapping("/messages")
+	fun message() = let { "user/messages" }
+
+	@ResponseBody
 	@GetMapping("/api/messages")
-	fun apiMessage() = let { "message ok" }
+	fun apiMessage() = let { """{"message":"message ok"}""" }
 }
