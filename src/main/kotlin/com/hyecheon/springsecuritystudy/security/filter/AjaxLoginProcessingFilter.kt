@@ -2,7 +2,7 @@ package com.hyecheon.springsecuritystudy.security.filter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.hyecheon.springsecuritystudy.dto.AccountDto
+import com.hyecheon.springsecuritystudy.domain.dto.AccountDto
 import com.hyecheon.springsecuritystudy.security.token.AjaxAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter

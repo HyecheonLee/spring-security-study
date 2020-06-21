@@ -1,4 +1,4 @@
-package com.hyecheon.springsecuritystudy.dto
+package com.hyecheon.springsecuritystudy.domain.dto
 
 data class AccountLoginDto(
 		var username: String = "",

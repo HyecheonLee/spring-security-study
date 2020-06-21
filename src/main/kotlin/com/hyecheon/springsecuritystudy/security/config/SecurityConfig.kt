@@ -1,5 +1,6 @@
 package com.hyecheon.springsecuritystudy.security.config
 
+import com.hyecheon.springsecuritystudy.meatadatasource.UrlFilterInvocationSecurityMetadataSource
 import com.hyecheon.springsecuritystudy.security.handler.CustomAccessDeniedHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationFailureHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
@@ -8,6 +9,10 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.security.access.AccessDecisionManager
+import org.springframework.security.access.AccessDecisionVoter
+import org.springframework.security.access.vote.AffirmativeBased
+import org.springframework.security.access.vote.RoleVoter
 import org.springframework.security.authentication.AuthenticationDetailsSource
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -18,6 +23,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor
 import org.springframework.security.web.authentication.WebAuthenticationDetails
 import javax.servlet.http.HttpServletRequest
 
@@ -69,11 +76,37 @@ class SecurityConfig(
 				.and()
 				.exceptionHandling()
 				.accessDeniedHandler(accessDeniedHandler())
+				.and()
+				.addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor::class.java)
 
 //		http.csrf().disable()
 	}
 
 	@Bean
 	fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler("/denied")
+
+	@Bean
+	fun customFilterSecurityInterceptor(): FilterSecurityInterceptor {
+		val filterSecurityInterceptor = FilterSecurityInterceptor()
+		filterSecurityInterceptor.securityMetadataSource = urlFilterInvocationSecurityMetadataSource()
+		filterSecurityInterceptor.accessDecisionManager = affirmativeBased()
+		filterSecurityInterceptor.authenticationManager = authenticationManager()
+		return filterSecurityInterceptor
+	}
+
+	@Bean
+	fun affirmativeBased(): AccessDecisionManager {
+		return AffirmativeBased(getAccessDecisionVoters())
+	}
+
+	@Bean
+	fun getAccessDecisionVoters(): MutableList<AccessDecisionVoter<*>> {
+		return mutableListOf(RoleVoter())
+	}
+
+	@Bean
+	fun urlFilterInvocationSecurityMetadataSource(): FilterInvocationSecurityMetadataSource {
+		return UrlFilterInvocationSecurityMetadataSource()
+	}
 
 }

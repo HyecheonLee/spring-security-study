@@ -1,7 +1,7 @@
 package com.hyecheon.springsecuritystudy.controller.user
 
-import com.hyecheon.springsecuritystudy.dto.AccountLoginDto
-import com.hyecheon.springsecuritystudy.domain.AccountMapper
+import com.hyecheon.springsecuritystudy.domain.dto.AccountLoginDto
+import com.hyecheon.springsecuritystudy.domain.entity.AccountMapper
 import com.hyecheon.springsecuritystudy.service.UserService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller

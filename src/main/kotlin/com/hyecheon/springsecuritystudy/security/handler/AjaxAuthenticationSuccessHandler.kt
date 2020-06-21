@@ -1,7 +1,7 @@
 package com.hyecheon.springsecuritystudy.security.handler
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.hyecheon.springsecuritystudy.domain.Account
+import com.hyecheon.springsecuritystudy.domain.entity.Account
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication

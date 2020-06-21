@@ -1,4 +1,4 @@
-package com.hyecheon.springsecuritystudy.domain
+package com.hyecheon.springsecuritystudy.domain.entity
 
 import java.io.Serializable
 import javax.persistence.Entity

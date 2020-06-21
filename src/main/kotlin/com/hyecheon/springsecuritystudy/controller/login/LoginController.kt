@@ -1,6 +1,6 @@
 package com.hyecheon.springsecuritystudy.controller.login
 
-import com.hyecheon.springsecuritystudy.domain.Account
+import com.hyecheon.springsecuritystudy.domain.entity.Account
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.stereotype.Controller
