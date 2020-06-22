@@ -5,7 +5,7 @@ data class AccountLoginDto(
 		var password: String = "",
 		var email: String = "",
 		var age: String = "",
-		var role: String = ""
+		var roles: List<String> = mutableListOf()
 )
 
 data class AccountDto(

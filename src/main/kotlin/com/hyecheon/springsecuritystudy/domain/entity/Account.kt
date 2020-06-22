@@ -1,10 +1,8 @@
 package com.hyecheon.springsecuritystudy.domain.entity
 
 import java.io.Serializable
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
+
 
 @Entity
 data class Account(
@@ -15,6 +13,29 @@ data class Account(
 		var password: String = "",
 		var email: String = "",
 		var age: String = "",
-		var role: String = ""
-) : Serializable
+		@ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+		@JoinTable(name = "account_roles", joinColumns = [JoinColumn(name = "account_id")], inverseJoinColumns = [JoinColumn(name = "role_id")])
+		val userRoles: MutableSet<Role> = mutableSetOf()
+) : Serializable {
+	fun addRole(role: Role) {
+		userRoles.add(role)
+	}
 
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is Account) return false
+
+		if (id != other.id) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		return id?.hashCode() ?: 0
+	}
+
+	override fun toString(): String {
+		return "Account(id=$id, username='$username', password='$password', email='$email', age='$age')"
+	}
+
+}

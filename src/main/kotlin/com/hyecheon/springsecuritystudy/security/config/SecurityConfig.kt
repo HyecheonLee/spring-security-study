@@ -1,10 +1,12 @@
 package com.hyecheon.springsecuritystudy.security.config
 
 import com.hyecheon.springsecuritystudy.meatadatasource.UrlFilterInvocationSecurityMetadataSource
+import com.hyecheon.springsecuritystudy.security.factory.UrlResourcesMapFactoryBean
 import com.hyecheon.springsecuritystudy.security.handler.CustomAccessDeniedHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationFailureHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
 import com.hyecheon.springsecuritystudy.security.provider.CustomAuthenticationProvider
+import com.hyecheon.springsecuritystudy.security.service.SecurityResourceService
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -36,7 +38,8 @@ class SecurityConfig(
 		val userDetailService: UserDetailsService,
 		val authenticationDetailsSource: AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails>,
 		val customAuthenticationSuccessHandler: CustomAuthenticationSuccessHandler,
-		val customAuthenticationFailureHandler: CustomAuthenticationFailureHandler) : WebSecurityConfigurerAdapter() {
+		val customAuthenticationFailureHandler: CustomAuthenticationFailureHandler,
+		val securityResourceService: SecurityResourceService) : WebSecurityConfigurerAdapter() {
 
 	override fun configure(auth: AuthenticationManagerBuilder) {
 		auth.authenticationProvider(authenticationProvider())
@@ -61,8 +64,8 @@ class SecurityConfig(
 		http
 				.authorizeRequests()
 				.antMatchers("/", "/users", "user/login/**", "/login*").permitAll()
-				.antMatchers("/mypage").hasRole("USER")
-				.antMatchers("/message").hasRole("MANAGER")
+				/*.antMatchers("/mypage").hasRole("USER")
+				.antMatchers("/message").hasRole("MANAGER")*/
 				.antMatchers("/config").hasRole("ADMIN")
 				.anyRequest().authenticated()
 				.and()
@@ -106,7 +109,12 @@ class SecurityConfig(
 
 	@Bean
 	fun urlFilterInvocationSecurityMetadataSource(): FilterInvocationSecurityMetadataSource {
-		return UrlFilterInvocationSecurityMetadataSource()
+//		return UrlFilterInvocationSecurityMetadataSource(linkedMapOf())
+		return UrlFilterInvocationSecurityMetadataSource(urlResourceMapFactoryBean().getObject())
 	}
 
+	@Bean
+	fun urlResourceMapFactoryBean(): UrlResourcesMapFactoryBean {
+		return UrlResourcesMapFactoryBean(securityResourceService)
+	}
 }

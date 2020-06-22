@@ -1,18 +1,18 @@
 package com.hyecheon.springsecuritystudy.security.provider
 
 import com.hyecheon.springsecuritystudy.security.service.AccountContext
+import com.hyecheon.springsecuritystudy.security.service.UserDetailService
 import com.hyecheon.springsecuritystudy.security.token.AjaxAuthenticationToken
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 
 
 class AjaxAuthenticationProvider : AuthenticationProvider {
 	@Autowired
-	lateinit var userDetailsService: UserDetailsService
+	lateinit var userDetailsService: UserDetailService
 
 	@Autowired
 	lateinit var passwordEncoder: PasswordEncoder
