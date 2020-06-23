@@ -14,8 +14,8 @@ class UserDetailService(
 	override fun loadUserByUsername(username: String): UserDetails {
 		val account = userRepository.findByUsername(username)
 				?: throw UsernameNotFoundException("UsernameNotFoundException : $username")
-		val roles = account.userRoles?.map { role -> SimpleGrantedAuthority(role.roleName) }
-		return AccountContext(account, roles ?: listOf())
+		val roles = account.userRoles.map { role -> SimpleGrantedAuthority(role.roleName) }
+		return AccountContext(account, roles)
 	}
 }
 

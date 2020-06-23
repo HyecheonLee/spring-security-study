@@ -11,15 +11,15 @@ data class Role(
 		@Id
 		@GeneratedValue
 		@Column(name = "role_id")
-		val id: Long? = null,
+		var id: Long? = null,
 		@Column(name = "role_name")
-		val roleName: String? = null,
+		var roleName: String? = null,
 		@Column(name = "role_desc")
-		val roleDesc: String? = null,
+		var roleDesc: String? = null,
 		@JsonIgnore
 		@ManyToMany(fetch = FetchType.LAZY, mappedBy = "roleSet")
 		@OrderBy("ordernum desc")
-		val resourcesSet: Set<Resources> = mutableSetOf()
+		var resourcesSet: MutableSet<Resources> = mutableSetOf()
 ) : Serializable {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
@@ -36,5 +36,9 @@ data class Role(
 
 	override fun toString(): String {
 		return "Role(id=$id, roleName=$roleName, roleDesc=$roleDesc)"
+	}
+
+	fun addRoleSet(resources: Resources) {
+		resourcesSet.add(resources)
 	}
 }

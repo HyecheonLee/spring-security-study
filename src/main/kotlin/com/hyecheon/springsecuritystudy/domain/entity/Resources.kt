@@ -23,7 +23,7 @@ class Resources(
 		val resourceType: String? = null,
 		@ManyToMany(fetch = FetchType.LAZY)
 		@JoinTable(name = "role_resources", joinColumns = [JoinColumn(name = "resource_id")], inverseJoinColumns = [JoinColumn(name = "role_id")])
-		val roleSet: Set<Role> = mutableSetOf()
+		val roleSet: MutableSet<Role> = mutableSetOf()
 ) : Serializable {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
@@ -40,5 +40,10 @@ class Resources(
 
 	override fun toString(): String {
 		return "Resources(id=$id, resourceName=$resourceName, httpMethod=$httpMethod, orderNum=$orderNum, resourceType=$resourceType)"
+	}
+
+	fun addRole(role: Role) {
+		role.addRoleSet(this)
+		roleSet.add(role)
 	}
 }

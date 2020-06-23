@@ -19,7 +19,7 @@ class LoginController {
 	          model: Model) = let {
 		error?.let { model.addAttribute("error", it) }
 		exception?.let { model.addAttribute("exception", it) }
-		"user/login/login"
+		"login"
 	}
 
 	@GetMapping("/logout")

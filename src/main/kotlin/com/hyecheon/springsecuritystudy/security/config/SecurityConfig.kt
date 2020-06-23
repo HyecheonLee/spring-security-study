@@ -1,6 +1,6 @@
 package com.hyecheon.springsecuritystudy.security.config
 
-import com.hyecheon.springsecuritystudy.meatadatasource.UrlFilterInvocationSecurityMetadataSource
+import com.hyecheon.springsecuritystudy.security.meatadatasource.UrlFilterInvocationSecurityMetadataSource
 import com.hyecheon.springsecuritystudy.security.factory.UrlResourcesMapFactoryBean
 import com.hyecheon.springsecuritystudy.security.handler.CustomAccessDeniedHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationFailureHandler
@@ -108,9 +108,8 @@ class SecurityConfig(
 	}
 
 	@Bean
-	fun urlFilterInvocationSecurityMetadataSource(): FilterInvocationSecurityMetadataSource {
-//		return UrlFilterInvocationSecurityMetadataSource(linkedMapOf())
-		return UrlFilterInvocationSecurityMetadataSource(urlResourceMapFactoryBean().getObject())
+	fun urlFilterInvocationSecurityMetadataSource() = let {
+		UrlFilterInvocationSecurityMetadataSource(urlResourceMapFactoryBean().getObject(), securityResourceService)
 	}
 
 	@Bean

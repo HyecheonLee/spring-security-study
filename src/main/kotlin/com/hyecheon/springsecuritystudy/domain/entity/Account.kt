@@ -1,5 +1,6 @@
 package com.hyecheon.springsecuritystudy.domain.entity
 
+import com.hyecheon.springsecuritystudy.domain.dto.AccountDto
 import java.io.Serializable
 import javax.persistence.*
 
@@ -15,7 +16,7 @@ data class Account(
 		var age: String = "",
 		@ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
 		@JoinTable(name = "account_roles", joinColumns = [JoinColumn(name = "account_id")], inverseJoinColumns = [JoinColumn(name = "role_id")])
-		val userRoles: MutableSet<Role> = mutableSetOf()
+		var userRoles: MutableSet<Role> = mutableSetOf()
 ) : Serializable {
 	fun addRole(role: Role) {
 		userRoles.add(role)
@@ -38,4 +39,18 @@ data class Account(
 		return "Account(id=$id, username='$username', password='$password', email='$email', age='$age')"
 	}
 
+	fun update(accountDto: AccountDto) {
+		if (accountDto.age.isNotEmpty()) {
+			age = accountDto.age
+		}
+		if (accountDto.email.isNotEmpty()) {
+			email = accountDto.email
+		}
+		if (accountDto.username.isNotEmpty()) {
+			username = accountDto.username
+		}
+		if (accountDto.password.isNotEmpty()) {
+			password = accountDto.password
+		}
+	}
 }
