@@ -1,12 +1,10 @@
 package com.hyecheon.springsecuritystudy.domain.entity;
 
 
-import com.hyecheon.springsecuritystudy.domain.dto.AccountDto;
-import org.jetbrains.annotations.NotNull;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -104,7 +102,7 @@ public class Account implements Serializable {
         if (!other.canEqual((Object) this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        if (!Objects.equals(this$id, other$id)) return false;
         return true;
     }
 

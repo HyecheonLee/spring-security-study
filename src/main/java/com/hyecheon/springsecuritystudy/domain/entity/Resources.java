@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "RESOURCES")
-@EntityListeners(value = { AuditingEntityListener.class })
+@EntityListeners(value = {AuditingEntityListener.class})
 public class Resources implements Serializable {
 
     @Id
@@ -31,7 +31,7 @@ public class Resources implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "role_resources", joinColumns = {
-            @JoinColumn(name = "resource_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
+            @JoinColumn(name = "resource_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> roleSet = new HashSet<>();
 
     public Resources(Long id, String resourceName, String httpMethod, int orderNum, String resourceType, Set<Role> roleSet) {
@@ -105,8 +105,7 @@ public class Resources implements Serializable {
         if (!other.canEqual((Object) this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
-        return true;
+        return this$id == null ? other$id == null : this$id.equals(other$id);
     }
 
     protected boolean canEqual(final Object other) {

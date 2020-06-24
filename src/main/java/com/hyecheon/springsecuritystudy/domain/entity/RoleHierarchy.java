@@ -21,7 +21,7 @@ public class RoleHierarchy implements Serializable {
     private RoleHierarchy parentName;
 
     @OneToMany(mappedBy = "parentName", cascade = {CascadeType.ALL})
-    private Set<RoleHierarchy> roleHierarchy = new HashSet<RoleHierarchy>();
+    private Set<RoleHierarchy> roleHierarchy = new HashSet<>();
 
     public RoleHierarchy(Long id, String childName, RoleHierarchy parentName, Set<RoleHierarchy> roleHierarchy) {
         this.id = id;
