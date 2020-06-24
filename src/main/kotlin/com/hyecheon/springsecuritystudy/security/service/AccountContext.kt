@@ -1,5 +1,4 @@
 package com.hyecheon.springsecuritystudy.security.service
-
 import com.hyecheon.springsecuritystudy.domain.entity.Account
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User

@@ -34,7 +34,7 @@ class UserManagerController(
 	@GetMapping(value = ["/admin/accounts/{id}"])
 	fun getUser(@PathVariable(value = "id") id: Long, model: Model): String {
 		val account = userService.getUser(id)
-		val accountDto = AccountDto(id = account.id, age = account.age, email = account.email, username = account.username, roles = account.userRoles.map { role ->
+		val accountDto = AccountDto(id = account.id, age = account.age.toString(), email = account.email, username = account.username, roles = account.userRoles.map { role ->
 			role.roleName ?: ""
 		}.filter { it.isNotEmpty() })
 

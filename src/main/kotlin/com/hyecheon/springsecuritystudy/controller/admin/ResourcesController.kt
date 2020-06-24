@@ -12,6 +12,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import java.util.*
 
 
 @Controller
@@ -33,7 +34,10 @@ class ResourcesController(
 	fun createResources(resourcesDto: ResourcesDto) = let {
 		val role = roleService.findByRoleName(resourcesDto.roleName)
 		val resources = resourcesMapper.toEntity(resourcesDto)
-		resources.addRole(role)
+		val roles: MutableSet<Role> = HashSet()
+		roles.add(role)
+		resources.roleSet = roles
+
 		resourcesService.createResources(resources)
 		filterInvocationSecurityMetadataSource.reload()
 		"redirect:/admin/resources"

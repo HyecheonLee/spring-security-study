@@ -22,7 +22,7 @@ class AjaxLoginProcessingFilter : AbstractAuthenticationProcessingFilter(AntPath
 		if (accountDto.username.isNullOrEmpty() || accountDto.password.isNullOrEmpty()) {
 			throw IllegalArgumentException("Username or Password is empty")
 		}
-		val token = AjaxAuthenticationToken(accountDto.username, accountDto.password)
+		val token = AjaxAuthenticationToken(accountDto.username ?: "", accountDto.password ?: "")
 		return this.authenticationManager.authenticate(token)
 	}
 

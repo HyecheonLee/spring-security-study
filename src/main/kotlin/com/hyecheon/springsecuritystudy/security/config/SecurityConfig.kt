@@ -1,10 +1,11 @@
 package com.hyecheon.springsecuritystudy.security.config
 
-import com.hyecheon.springsecuritystudy.security.meatadatasource.UrlFilterInvocationSecurityMetadataSource
 import com.hyecheon.springsecuritystudy.security.factory.UrlResourcesMapFactoryBean
+import com.hyecheon.springsecuritystudy.security.filter.PermitAllFilter
 import com.hyecheon.springsecuritystudy.security.handler.CustomAccessDeniedHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationFailureHandler
 import com.hyecheon.springsecuritystudy.security.handler.CustomAuthenticationSuccessHandler
+import com.hyecheon.springsecuritystudy.security.meatadatasource.UrlFilterInvocationSecurityMetadataSource
 import com.hyecheon.springsecuritystudy.security.provider.CustomAuthenticationProvider
 import com.hyecheon.springsecuritystudy.security.service.SecurityResourceService
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
@@ -25,8 +26,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import org.springframework.security.web.authentication.WebAuthenticationDetails
 import javax.servlet.http.HttpServletRequest
 
@@ -40,6 +41,8 @@ class SecurityConfig(
 		val customAuthenticationSuccessHandler: CustomAuthenticationSuccessHandler,
 		val customAuthenticationFailureHandler: CustomAuthenticationFailureHandler,
 		val securityResourceService: SecurityResourceService) : WebSecurityConfigurerAdapter() {
+
+	val permitAllResources = arrayOf("/", "/login", "/user/login/**")
 
 	override fun configure(auth: AuthenticationManagerBuilder) {
 		auth.authenticationProvider(authenticationProvider())
@@ -63,21 +66,18 @@ class SecurityConfig(
 	override fun configure(http: HttpSecurity) {
 		http
 				.authorizeRequests()
-				.antMatchers("/", "/users", "user/login/**", "/login*").permitAll()
-				/*.antMatchers("/mypage").hasRole("USER")
-				.antMatchers("/message").hasRole("MANAGER")*/
-				.antMatchers("/config").hasRole("ADMIN")
 				.anyRequest().authenticated()
 				.and()
 				.formLogin()
 				.loginPage("/login")
-				.loginProcessingUrl("/login_proc")
 				.authenticationDetailsSource(authenticationDetailsSource)
 				.successHandler(customAuthenticationSuccessHandler)
 				.failureHandler(customAuthenticationFailureHandler)
 				.permitAll()
 				.and()
 				.exceptionHandling()
+				.authenticationEntryPoint(LoginUrlAuthenticationEntryPoint("/login"))
+				.accessDeniedPage(("/denied"))
 				.accessDeniedHandler(accessDeniedHandler())
 				.and()
 				.addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor::class.java)
@@ -89,12 +89,12 @@ class SecurityConfig(
 	fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler("/denied")
 
 	@Bean
-	fun customFilterSecurityInterceptor(): FilterSecurityInterceptor {
-		val filterSecurityInterceptor = FilterSecurityInterceptor()
-		filterSecurityInterceptor.securityMetadataSource = urlFilterInvocationSecurityMetadataSource()
-		filterSecurityInterceptor.accessDecisionManager = affirmativeBased()
-		filterSecurityInterceptor.authenticationManager = authenticationManager()
-		return filterSecurityInterceptor
+	fun customFilterSecurityInterceptor() = let {
+		val permitAllFilter = PermitAllFilter(*permitAllResources)
+		permitAllFilter.securityMetadataSource = urlFilterInvocationSecurityMetadataSource()
+		permitAllFilter.accessDecisionManager = affirmativeBased()
+		permitAllFilter.authenticationManager = authenticationManager()
+		permitAllFilter
 	}
 
 	@Bean
@@ -108,9 +108,8 @@ class SecurityConfig(
 	}
 
 	@Bean
-	fun urlFilterInvocationSecurityMetadataSource() = let {
-		UrlFilterInvocationSecurityMetadataSource(urlResourceMapFactoryBean().getObject(), securityResourceService)
-	}
+	fun urlFilterInvocationSecurityMetadataSource() =
+			UrlFilterInvocationSecurityMetadataSource(urlResourceMapFactoryBean().getObject(), securityResourceService)
 
 	@Bean
 	fun urlResourceMapFactoryBean(): UrlResourcesMapFactoryBean {
