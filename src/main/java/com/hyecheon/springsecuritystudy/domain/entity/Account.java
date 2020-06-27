@@ -1,6 +1,8 @@
 package com.hyecheon.springsecuritystudy.domain.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -26,6 +28,7 @@ public class Account implements Serializable {
     @Column
     private String password;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "account_roles", joinColumns = {@JoinColumn(name = "account_id")}, inverseJoinColumns = {
             @JoinColumn(name = "role_id")})

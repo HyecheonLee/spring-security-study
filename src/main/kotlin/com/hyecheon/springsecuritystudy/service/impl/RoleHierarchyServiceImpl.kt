@@ -11,8 +11,8 @@ class RoleHierarchyServiceImpl(
 		val rolesHierarchy = roleHierarchyRepository.findAll()
 
 		return rolesHierarchy.filter { roleHierarchy -> roleHierarchy.parentName != null }
-				.map { roleHierarchy ->
+				.joinToString("\n") { roleHierarchy ->
 					"${roleHierarchy.parentName!!.childName} > ${roleHierarchy.childName}"
-				}.joinToString { "\n" }
+				}
 	}
 }

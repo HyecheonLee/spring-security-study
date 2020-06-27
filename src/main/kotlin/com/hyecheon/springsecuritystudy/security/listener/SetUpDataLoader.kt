@@ -1,13 +1,7 @@
 package com.hyecheon.springsecuritystudy.security.listener
 
-import com.hyecheon.springsecuritystudy.domain.entity.Account
-import com.hyecheon.springsecuritystudy.domain.entity.Resources
-import com.hyecheon.springsecuritystudy.domain.entity.Role
-import com.hyecheon.springsecuritystudy.domain.entity.RoleHierarchy
-import com.hyecheon.springsecuritystudy.repository.ResourcesRepository
-import com.hyecheon.springsecuritystudy.repository.RoleHierarchyRepository
-import com.hyecheon.springsecuritystudy.repository.RoleRepository
-import com.hyecheon.springsecuritystudy.repository.UserRepository
+import com.hyecheon.springsecuritystudy.domain.entity.*
+import com.hyecheon.springsecuritystudy.repository.*
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -17,12 +11,14 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 @Component
+@Transactional
 class SetUpDataLoader(
 		private val roleHierarchyRepository: RoleHierarchyRepository,
 		private val resourcesRepository: ResourcesRepository,
 		private val userRepository: UserRepository,
 		private val passwordEncoder: PasswordEncoder,
-		private val roleRepository: RoleRepository) : ApplicationListener<ContextRefreshedEvent> {
+		private val roleRepository: RoleRepository,
+		private val accessIpRepository: AccessIpRepository) : ApplicationListener<ContextRefreshedEvent> {
 
 	private var alreadySetup = false
 
@@ -33,6 +29,7 @@ class SetUpDataLoader(
 			return
 		}
 		setupSecurityResources()
+		setupAccessIpData()
 		alreadySetup = true
 	}
 
@@ -42,7 +39,7 @@ class SetUpDataLoader(
 		roles.add(adminRole)
 		createResourceIfNotFound("/admin/**", "", roles, "url")
 		createResourceIfNotFound("execution(public * io.security.corespringsecurity.aopsecurity.*Service.pointcut*(..))", "", roles, "pointcut")
-		createUserIfNotFound("admin", "admin@admin.com", "pass", mutableSetOf())
+		createUserIfNotFound("admin", "admin@admin.com", "pass", roles)
 		val managerRole = createRoleIfNotFound("ROLE_MANAGER", "매니저권한")
 		val userRole = createRoleIfNotFound("ROLE_USER", "사용자권한")
 		createRoleHierarchyIfNotFound(managerRole, adminRole)
@@ -108,5 +105,15 @@ class SetUpDataLoader(
 		val childRoleHierarchy = roleHierarchyRepository.save(roleHierarchy!!)
 		childRoleHierarchy.parentName = parentRoleHierarchy
 		roleHierarchyRepository.save(childRoleHierarchy)
+	}
+
+	private fun setupAccessIpData() {
+		val byIpAddress = accessIpRepository.findByIpAddress("0:0:0:0:0:0:0:1")
+		if (byIpAddress == null) {
+			val accessIp = AccessIp.builder()
+					.ipAddress("0:0:0:0:0:0:0:1")
+					.build()
+			accessIpRepository.save(accessIp)
+		}
 	}
 }

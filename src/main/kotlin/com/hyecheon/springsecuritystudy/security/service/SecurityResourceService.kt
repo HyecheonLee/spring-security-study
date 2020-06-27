@@ -1,6 +1,7 @@
 package com.hyecheon.springsecuritystudy.security.service
 
 import com.hyecheon.springsecuritystudy.domain.entity.Resources
+import com.hyecheon.springsecuritystudy.repository.AccessIpRepository
 import com.hyecheon.springsecuritystudy.repository.ResourcesRepository
 import org.springframework.security.access.ConfigAttribute
 import org.springframework.security.access.SecurityConfig
@@ -9,7 +10,10 @@ import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.stereotype.Service
 
 @Service
-class SecurityResourceService(private val resourcesRepository: ResourcesRepository) {
+class SecurityResourceService(
+		private val resourcesRepository: ResourcesRepository,
+		private val accessIpRepository: AccessIpRepository
+) {
 	fun getResourceList(): LinkedHashMap<RequestMatcher, MutableList<ConfigAttribute>> {
 		val resourcesList = resourcesRepository.findAllResources()
 		return resourcesList.fold(linkedMapOf(), { acc: LinkedHashMap<RequestMatcher, MutableList<ConfigAttribute>>, resources: Resources ->
@@ -20,5 +24,9 @@ class SecurityResourceService(private val resourcesRepository: ResourcesReposito
 					})
 			acc
 		})
+	}
+
+	fun getAccessIpList(): List<String> {
+		return accessIpRepository.findAll().map { it.ipAddress }
 	}
 }
