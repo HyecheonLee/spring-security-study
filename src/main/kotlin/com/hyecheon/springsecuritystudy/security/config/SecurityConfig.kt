@@ -21,7 +21,6 @@ import org.springframework.security.access.vote.RoleHierarchyVoter
 import org.springframework.security.authentication.AuthenticationDetailsSource
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -37,7 +36,6 @@ import javax.servlet.http.HttpServletRequest
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @Order(1)
 class SecurityConfig(
 		val userDetailService: UserDetailsService,
@@ -109,12 +107,14 @@ class SecurityConfig(
 
 	@Bean
 	fun getAccessDecisionVoters(): MutableList<AccessDecisionVoter<*>> {
-		return mutableListOf(IpAddressVoter(securityResourceService), roleVoter())
+		val accessDecisionVoters = mutableListOf<AccessDecisionVoter<*>>()
+		accessDecisionVoters.add(roleVoter())
+		return accessDecisionVoters
 	}
 
 
 	@Bean
-	fun roleVoter(): AccessDecisionVoter<*> {
+	fun roleVoter(): RoleHierarchyVoter {
 		return RoleHierarchyVoter(roleHierarchy())
 	}
 

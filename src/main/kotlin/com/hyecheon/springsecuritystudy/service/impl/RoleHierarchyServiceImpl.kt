@@ -13,6 +13,6 @@ class RoleHierarchyServiceImpl(
 		return rolesHierarchy.filter { roleHierarchy -> roleHierarchy.parentName != null }
 				.joinToString("\n") { roleHierarchy ->
 					"${roleHierarchy.parentName!!.childName} > ${roleHierarchy.childName}"
-				}
+				} + "\n"
 	}
 }
