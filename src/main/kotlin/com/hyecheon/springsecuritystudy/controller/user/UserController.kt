@@ -16,7 +16,10 @@ class UserController(
 ) {
 
 	@GetMapping("/mypage")
-	fun myPage() = "user/mypage"
+	fun myPage() = let {
+		userService.order()
+		"user/mypage"
+	}
 
 	@GetMapping("/users")
 	fun createUser() = "user/login/register"

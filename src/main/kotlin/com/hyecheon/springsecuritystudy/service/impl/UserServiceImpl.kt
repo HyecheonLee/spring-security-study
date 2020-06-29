@@ -6,6 +6,7 @@ import com.hyecheon.springsecuritystudy.domain.entity.Role
 import com.hyecheon.springsecuritystudy.repository.RoleRepository
 import com.hyecheon.springsecuritystudy.repository.UserRepository
 import com.hyecheon.springsecuritystudy.service.UserService
+import org.springframework.security.access.annotation.Secured
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -58,4 +59,10 @@ class UserServiceImpl(
 	override fun deleteUser(id: Long) {
 		userRepository.deleteById(id)
 	}
+
+	@Secured("ROLE_MANAGER")
+	override fun order() {
+		println("order")
+	}
+
 }
