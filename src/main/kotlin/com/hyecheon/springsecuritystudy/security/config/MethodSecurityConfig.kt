@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity
 class MethodSecurityConfig : GlobalMethodSecurityConfiguration() {
 	@Autowired
 	lateinit var securityResourceService: SecurityResourceService
