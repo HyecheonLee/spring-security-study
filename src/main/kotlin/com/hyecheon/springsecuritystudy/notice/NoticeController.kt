@@ -1,8 +1,7 @@
 package com.hyecheon.springsecuritystudy.notice
 
 import com.hyecheon.springsecuritystudy.note.NoteRegisterDto
-import com.hyecheon.springsecuritystudy.user.User
-import org.springframework.security.core.Authentication
+import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.*
  * Email: rainbow880616@gmail.com
  * Date: 2021/09/14
  */
+@Controller
+@RequestMapping("/notice")
 class NoticeController(
     private val noticeService: NoticeService,
 ) {
