@@ -1,18 +1,16 @@
 package com.hyecheon.springsecuritystudy.notice
 
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Lob
+import javax.persistence.*
 
 /**
  * User: hyecheon lee
  * Email: rainbow880616@gmail.com
  * Date: 2021/09/14
  */
+@Entity
 data class Notice(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +27,5 @@ data class Notice(
     @LastModifiedDate
     var updatedAt: LocalDateTime = LocalDateTime.now(),
 
-    )
+    ) {
+}
